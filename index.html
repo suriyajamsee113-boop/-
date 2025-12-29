@@ -3,28 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>โปรแกรมหารค่าอาหาร </title>
+    <title>โปรแกรมหารค่าอาหาร</title>
     <style>
         :root {
-            /* สีหลัก */
-            --primary: #d4af37; /* สีทอง (Gold) แบบไทย */
+            --primary: #d4af37;
             --primary-hover: #b59021;
-            --danger: #ff5f56;  /* สีแดง */
-            --bg: #0f172a;      /* สีกรมท่าเข้ม (Dark Navy) */
-            --card: #1e293b;    /* สีกรมท่าสำหรับกล่องข้อความ */
-            --text: #e2e8f0;    /* สีขาวอมเทา */
+            --danger: #ff5f56;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #e2e8f0;
             --text-muted: #94a3b8;
             --border: #334155;
             --input-bg: #2a374a;
+            --success: #22c55e;
         }
 
         body {
-            font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: 'Sarabun', sans-serif;
             margin: 0;
             padding: 20px;
             color: var(--text);
             background-color: var(--bg);
-            /* ลวดลายไทย (ลายประจำยามประยุกต์) สร้างด้วย CSS SVG */
             background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
 
@@ -36,210 +35,140 @@
             border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
             border: 1px solid var(--border);
-            /* เพิ่มขอบทองด้านบนให้ดูหรู */
             border-top: 4px solid var(--primary);
         }
 
-        h1, h2, h3, h4 { 
-            color: var(--primary); /* หัวข้อสีทอง */
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-        h1 { text-align: center; margin-bottom: 30px; }
-        h3 { margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-
-        /* Form Elements */
-        .section { margin-bottom: 30px; }
-        
-        .input-group {
+        /* Toolbar สำหรับ Save/Load */
+        .toolbar {
             display: flex;
+            justify-content: flex-end;
             gap: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
         }
+
+        .btn-tool {
+            padding: 6px 12px;
+            font-size: 12px;
+            background: var(--input-bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-tool:hover { background: var(--border); }
+
+        h1 { text-align: center; color: var(--primary); margin-top: 0; }
+        h3 { color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+
+        .section { margin-bottom: 25px; }
+        .input-group { display: flex; gap: 10px; margin-bottom: 10px; }
 
         input[type="text"], input[type="number"] {
-            padding: 12px;
+            padding: 10px;
             border: 1px solid var(--border);
-            background-color: var(--input-bg);
+            background: var(--input-bg);
             color: var(--text);
-            border-radius: 8px;
+            border-radius: 6px;
             width: 100%;
-            font-size: 16px;
-            outline: none;
         }
-        input:focus { border-color: var(--primary); }
 
         button {
-            padding: 10px 20px;
+            padding: 10px 15px;
+            border-radius: 6px;
             border: none;
-            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 14px;
-            transition: 0.3s;
-        }
-        .btn-gold { background-color: var(--primary); color: #0f172a; }
-        .btn-gold:hover { background-color: var(--primary-hover); }
-        .btn-del { background-color: var(--danger); color: white; padding: 5px 12px; font-size: 12px;}
-
-        /* Friend Tags (ส่วนที่เพิ่มปุ่มลบ) */
-        .friend-list-area {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            min-height: 40px;
-            padding: 10px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 8px;
-            border: 1px dashed var(--border);
-        }
-        .friend-tag {
-            background: var(--input-bg);
-            color: var(--primary);
-            padding: 5px 10px 5px 15px;
-            border-radius: 20px;
-            border: 1px solid var(--primary);
-            font-size: 0.95em;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            animation: fadeIn 0.3s ease;
-        }
-        .delete-friend-btn {
-            background: rgba(255,255,255,0.1);
-            color: var(--text-muted);
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 14px;
             transition: 0.2s;
         }
-        .delete-friend-btn:hover {
-            background: var(--danger);
-            color: white;
+        .btn-gold { background: var(--primary); color: var(--bg); }
+        .btn-gold:hover { background: var(--primary-hover); }
+        .btn-del { background: var(--danger); color: white; padding: 4px 8px; font-size: 11px; }
+
+        /* Friend Tags */
+        .friend-list-area {
+            display: flex; gap: 8px; flex-wrap: wrap;
+            padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px; border: 1px dashed var(--border);
         }
+        .friend-tag {
+            background: var(--input-bg); color: var(--primary);
+            padding: 4px 10px; border-radius: 15px; border: 1px solid var(--primary);
+            display: flex; align-items: center; gap: 8px; font-size: 0.9em;
+        }
+        .del-tag { cursor: pointer; color: var(--text-muted); }
+        .del-tag:hover { color: var(--danger); }
 
         /* Checkboxes */
         .friend-checkboxes {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 10px 0;
-            background: rgba(0,0,0,0.2);
-            padding: 15px;
-            border-radius: 8px;
+            display: flex; flex-wrap: wrap; gap: 8px; padding: 12px;
+            background: rgba(0,0,0,0.2); border-radius: 8px;
         }
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--input-bg);
-            color: var(--text);
-            padding: 8px 12px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            cursor: pointer;
-            user-select: none;
+        .cb-item {
+            display: flex; align-items: center; gap: 5px;
+            background: var(--input-bg); padding: 5px 10px; border-radius: 5px;
+            font-size: 0.9em; border: 1px solid var(--border);
         }
-        .checkbox-item:hover { border-color: var(--primary); }
-        input[type="checkbox"] { accent-color: var(--primary); transform: scale(1.2); }
 
-        /* Food List */
+        /* List Items */
         ul { list-style: none; padding: 0; }
         li {
-            background: rgba(255,255,255,0.03);
-            border-bottom: 1px solid var(--border);
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 5px;
-            border-radius: 6px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px; border-bottom: 1px solid var(--border);
+            background: rgba(255,255,255,0.02); margin-bottom: 4px; border-radius: 4px;
         }
-        .item-details { font-size: 0.85em; color: var(--text-muted); margin-top: 4px; }
+        .details { font-size: 0.8em; color: var(--text-muted); }
 
         /* Summary */
         .summary-box {
             background: linear-gradient(145deg, rgba(212, 175, 55, 0.1), transparent);
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 25px;
-            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 15px; border-radius: 10px; border: 1px solid rgba(212, 175, 55, 0.2);
         }
-        .total-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 1.3em;
-            font-weight: bold;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-        .person-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px dashed var(--border);
-            color: var(--text);
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .total-row { display: flex; justify-content: space-between; font-weight: bold; color: var(--primary); font-size: 1.2em; }
+        .person-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--border); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>🥘 หารค่าบิล </h1>
+    <div class="toolbar">
+        <button class="btn-tool" onclick="saveToFile()">💾 บันทึกไฟล์ (Save)</button>
+        <button class="btn-tool" onclick="document.getElementById('fileInput').click()">📂 เปิดไฟล์ (Open)</button>
+        <input type="file" id="fileInput" style="display:none" accept=".json" onchange="openFile(event)">
+    </div>
+
+    <h1>🥘 หารค่าอาหาร</h1>
 
     <div class="section">
-        <h3>1. รายชื่อเพื่อน (เพิ่ม/ลบ)</h3>
+        <h3>1. รายชื่อเพื่อน</h3>
         <div class="input-group">
-            <input type="text" id="friendName" placeholder="พิมพ์ชื่อเพื่อน..." onkeypress="handleEnter(event, addFriend)">
-            <button class="btn-gold" onclick="addFriend()">เพิ่มเพื่อน</button>
+            <input type="text" id="friendName" placeholder="เพิ่มชื่อเพื่อน..." onkeypress="if(event.key==='Enter')addFriend()">
+            <button class="btn-gold" onclick="addFriend()">เพิ่ม</button>
         </div>
-        
-        <div id="friendListDisplay" class="friend-list-area">
-            <span style="color: var(--text-muted); font-size: 0.9em; margin: auto;">ยังไม่มีรายชื่อเพื่อน</span>
-        </div>
+        <div id="friendListDisplay" class="friend-list-area"></div>
     </div>
 
     <div class="section">
-        <h3>2. สั่งรายการอาหาร</h3>
+        <h3>2. รายการอาหาร</h3>
         <div class="input-group">
-            <input type="text" id="foodName" placeholder="ชื่อเมนูอาหาร" style="flex: 2;">
-            <input type="number" id="foodPrice" placeholder="ราคา (บาท)" style="flex: 1;">
+            <input type="text" id="foodName" placeholder="ชื่อเมนู" style="flex:2">
+            <input type="number" id="foodPrice" placeholder="ราคา" style="flex:1">
         </div>
-        
-        <p style="margin: 10px 0 5px 0; color: var(--primary); font-size: 0.95em;">เลือกคนหารรายการนี้:</p>
-        <div class="friend-checkboxes" id="friendCheckboxes">
-            <span style="color: var(--text-muted); font-size: 0.9em;">กรุณาเพิ่มเพื่อนในข้อ 1 ก่อน...</span>
-        </div>
-
-        <button class="btn-gold" style="width: 100%; margin-top: 15px; padding: 12px;" onclick="addFoodItem()">+ บันทึกรายการ</button>
+        <p style="font-size:0.85em; color:var(--primary); margin:5px 0;">ใครหารบ้าง?</p>
+        <div id="friendCheckboxes" class="friend-checkboxes"></div>
+        <button class="btn-gold" style="width:100%; margin-top:10px" onclick="addFoodItem()">+ บันทึกรายการนี้</button>
     </div>
 
     <div class="section">
-        <h3>📝 รายการที่บันทึกแล้ว</h3>
-        <ul id="foodList">
-            <li style="justify-content: center; color: var(--text-muted); background:none; border:none;">ยังไม่มีรายการ</li>
-        </ul>
+        <h3>📝 รายการที่สั่งไป</h3>
+        <ul id="foodList"></ul>
     </div>
 
     <div class="summary-box">
-        <div class="total-row">
-            <span>ยอดรวมสุทธิ:</span>
-            <span id="grandTotal">0.00 ฿</span>
-        </div>
-        <div style="height: 1px; background: var(--primary); opacity: 0.3; margin-bottom: 15px;"></div>
-        <h4 style="margin: 0 0 10px 0; color: var(--text);">สรุปยอดรายคน:</h4>
-        <div id="resultList">
-            <p style="text-align: center; color: var(--text-muted);">...รอการคำนวณ...</p>
-        </div>
+        <div class="total-row"><span>รวมทั้งหมด:</span><span id="grandTotal">0.00 ฿</span></div>
+        <hr style="opacity:0.2">
+        <div id="resultList"></div>
     </div>
 </div>
 
@@ -247,207 +176,124 @@
     let friends = [];
     let foodItems = [];
 
-    function handleEnter(e, func) {
-        if (e.key === 'Enter') func();
+    // --- ระบบจัดการไฟล์ ---
+    function saveToFile() {
+        if (friends.length === 0 && foodItems.length === 0) {
+            alert("ไม่มีข้อมูลให้บันทึก"); return;
+        }
+        const data = { friends, foodItems };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `bill-${new Date().toLocaleDateString()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
     }
 
-    // --- 1. จัดการรายชื่อเพื่อน ---
-    function addFriend() {
-        const nameInput = document.getElementById('friendName');
-        const name = nameInput.value.trim();
+    function openFile(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                friends = data.friends || [];
+                foodItems = data.foodItems || [];
+                updateUI();
+                alert("โหลดข้อมูลเรียบร้อยแล้ว");
+            } catch (err) {
+                alert("ไฟล์ไม่ถูกต้อง");
+            }
+        };
+        reader.readAsText(file);
+    }
 
+    // --- ระบบจัดการข้อมูลหน้าเว็บ ---
+    function addFriend() {
+        const input = document.getElementById('friendName');
+        const name = input.value.trim();
         if (name && !friends.includes(name)) {
             friends.push(name);
-            nameInput.value = '';
+            input.value = '';
             updateUI();
-        } else if (friends.includes(name)) {
-            alert('มีชื่อนี้อยู่แล้วครับ');
         }
     }
 
     function removeFriend(name) {
-        if(confirm('ต้องการลบชื่อ "' + name + '" ออกใช่ไหม? (หากเขามีส่วนหารในรายการอาหาร ยอดจะถูกคำนวณใหม่โดยตัดเขาออก)')) {
-            // ลบชื่อออกจาก list หลัก
+        if(confirm(`ต้องการลบ ${name}?`)) {
             friends = friends.filter(f => f !== name);
-            
-            // ลบชื่อออกจากรายการอาหารที่เคยสั่งไปแล้วด้วย
-            foodItems.forEach(item => {
-                item.sharers = item.sharers.filter(s => s !== name);
-            });
-
+            foodItems.forEach(item => item.sharers = item.sharers.filter(s => s !== name));
             updateUI();
         }
     }
 
-    // ฟังก์ชันอัปเดตหน้าจอทั้งหมด
-    function updateUI() {
-        renderFriends();
-        renderCheckboxes();
-        renderFoodList(); // รีเฟรชรายการอาหารด้วยเผื่อจำนวนคนหารเปลี่ยน
-        calculateShare();
-    }
-
-    function renderFriends() {
-        const div = document.getElementById('friendListDisplay');
-        if (friends.length === 0) {
-            div.innerHTML = '<span style="color: var(--text-muted); font-size: 0.9em; margin: auto;">ยังไม่มีรายชื่อเพื่อน</span>';
-            return;
-        }
-
-        div.innerHTML = friends.map(f => `
-            <div class="friend-tag">
-                ${f}
-                <div class="delete-friend-btn" onclick="removeFriend('${f}')" title="ลบชื่อ">✕</div>
-            </div>
-        `).join('');
-    }
-
-    function renderCheckboxes() {
-        const div = document.getElementById('friendCheckboxes');
-        if (friends.length === 0) {
-            div.innerHTML = '<span style="color: var(--text-muted); font-size: 0.9em;">กรุณาเพิ่มเพื่อนในข้อ 1 ก่อน...</span>';
-            return;
-        }
-
-        // สร้าง checkbox เลือกทุกคน
-        let html = `
-            <div class="checkbox-item" onclick="toggleAll(this)">
-                <input type="checkbox" id="selectAll" checked onchange="toggleAllCheckboxes(this)"> 
-                <label style="cursor:pointer;">เหมาหมด (ทุกคน)</label>
-            </div>
-        `;
-        
-        // สร้าง checkbox ตามรายชื่อเพื่อน
-        html += friends.map(f => `
-            <label class="checkbox-item">
-                <input type="checkbox" value="${f}" checked class="friend-check"> ${f}
-            </label>
-        `).join('');
-
-        div.innerHTML = html;
-    }
-
-    function toggleAll(divElement) {
-         const checkbox = divElement.querySelector('input[type="checkbox"]');
-         if(event.target !== checkbox) {
-             checkbox.checked = !checkbox.checked;
-             toggleAllCheckboxes(checkbox);
-         }
-    }
-
-    function toggleAllCheckboxes(source) {
-        const checkboxes = document.querySelectorAll('.friend-check');
-        checkboxes.forEach(cb => cb.checked = source.checked);
-    }
-
-    // --- 2. จัดการรายการอาหาร ---
     function addFoodItem() {
-        const foodName = document.getElementById('foodName').value.trim();
-        const foodPrice = parseFloat(document.getElementById('foodPrice').value);
-        
-        const checkboxes = document.querySelectorAll('.friend-check:checked');
-        const selectedFriends = Array.from(checkboxes).map(cb => cb.value);
+        const name = document.getElementById('foodName').value.trim();
+        const price = parseFloat(document.getElementById('foodPrice').value);
+        const checked = Array.from(document.querySelectorAll('.friend-check:checked')).map(cb => cb.value);
 
-        if (!foodName || isNaN(foodPrice)) {
-            alert('กรุณากรอกชื่อเมนูและราคาให้ถูกต้อง'); return;
-        }
-        if (selectedFriends.length === 0) {
-            alert('ต้องมีคนหารอย่างน้อย 1 คนครับ'); return;
+        if (!name || isNaN(price) || checked.length === 0) {
+            alert("กรุณากรอกข้อมูลให้ครบและเลือกคนหารอย่างน้อย 1 คน"); return;
         }
 
-        const item = {
-            id: Date.now(),
-            name: foodName,
-            price: foodPrice,
-            sharers: selectedFriends
-        };
-
-        foodItems.push(item);
-        
-        // Reset inputs
+        foodItems.push({ id: Date.now(), name, price, sharers: checked });
         document.getElementById('foodName').value = '';
         document.getElementById('foodPrice').value = '';
-        // Reset selection
-        renderCheckboxes();
-
-        renderFoodList();
-        calculateShare();
+        updateUI();
     }
 
-    function deleteItem(index) {
+    function deleteFood(index) {
         foodItems.splice(index, 1);
-        renderFoodList();
-        calculateShare();
+        updateUI();
     }
 
-    function renderFoodList() {
-        const list = document.getElementById('foodList');
-        if (foodItems.length === 0) {
-            list.innerHTML = '<li style="justify-content: center; color: var(--text-muted); background:none; border:none;">ยังไม่มีรายการ</li>';
-            return;
-        }
+    function updateUI() {
+        // รายชื่อเพื่อน
+        const friendDiv = document.getElementById('friendListDisplay');
+        friendDiv.innerHTML = friends.map(f => `
+            <div class="friend-tag">${f} <span class="del-tag" onclick="removeFriend('${f}')">✕</span></div>
+        `).join('') || '<span style="color:var(--text-muted); font-size:0.8em; margin:auto;">ยังไม่มีชื่อเพื่อน</span>';
 
-        list.innerHTML = foodItems.map((item, index) => `
+        // Checkboxes
+        const cbDiv = document.getElementById('friendCheckboxes');
+        cbDiv.innerHTML = friends.length ? friends.map(f => `
+            <label class="cb-item"><input type="checkbox" class="friend-check" value="${f}" checked> ${f}</label>
+        `).join('') : '<span style="font-size:0.8em; color:var(--text-muted);">เพิ่มเพื่อนก่อน...</span>';
+
+        // รายการอาหาร
+        const list = document.getElementById('foodList');
+        list.innerHTML = foodItems.map((item, idx) => `
             <li>
                 <div>
-                    <strong style="color: var(--text); font-size:1.1em;">${item.name}</strong> 
-                    <span style="color: var(--primary);">(${formatMoney(item.price)})</span>
-                    <div class="item-details">
-                        คนหาร (${item.sharers.length}): ${item.sharers.join(', ')}
-                        ${item.sharers.length === 0 ? '<span style="color:var(--danger)">(ไม่มีคนหาร - กรุณาลบรายการนี้)</span>' : ''}
-                    </div>
+                    <strong>${item.name}</strong> <span style="color:var(--primary)">(${item.price.toLocaleString()} ฿)</span>
+                    <div class="details">หาร ${item.sharers.length} คน: ${item.sharers.join(', ')}</div>
                 </div>
-                <button class="btn-del" onclick="deleteItem(${index})">ลบ</button>
+                <button class="btn-del" onclick="deleteFood(${idx})">ลบ</button>
             </li>
-        `).join('');
-    }
+        `).join('') || '<li style="justify-content:center; color:var(--text-muted); background:none; border:none;">ไม่มีรายการ</li>';
 
-    // --- 3. คำนวณเงิน ---
-    function calculateShare() {
-        let grandTotal = 0;
-        let friendTotals = {};
-
-        friends.forEach(f => friendTotals[f] = 0);
+        // คำนวณเงิน
+        let total = 0;
+        let summary = {};
+        friends.forEach(f => summary[f] = 0);
 
         foodItems.forEach(item => {
+            total += item.price;
             if(item.sharers.length > 0) {
-                grandTotal += item.price;
-                const pricePerPerson = item.price / item.sharers.length;
-                item.sharers.forEach(person => {
-                    if (friendTotals[person] !== undefined) {
-                        friendTotals[person] += pricePerPerson;
-                    }
-                });
+                const perHead = item.price / item.sharers.length;
+                item.sharers.forEach(s => { if(summary[s]!==undefined) summary[s]+=perHead; });
             }
         });
 
-        document.getElementById('grandTotal').textContent = formatMoney(grandTotal);
-
-        const resultDiv = document.getElementById('resultList');
-        if (friends.length === 0) {
-            resultDiv.innerHTML = '<p style="text-align: center; color: var(--text-muted);">เพิ่มเพื่อนเพื่อเริ่มคำนวณ</p>';
-            return;
-        }
-
-        let html = '';
-        let hasData = false;
-        for (const [name, total] of Object.entries(friendTotals)) {
-            hasData = true;
-            html += `
-                <div class="person-row">
-                    <span>${name}</span>
-                    <span style="font-weight: bold; color: var(--primary);">${formatMoney(total)}</span>
-                </div>
-            `;
-        }
+        document.getElementById('grandTotal').innerText = total.toLocaleString(undefined, {minimumFractionDigits:2}) + ' ฿';
         
-        if(!hasData) html = '<p style="text-align: center; color: var(--text-muted);">ยังไม่มีรายการ</p>';
-        resultDiv.innerHTML = html;
+        document.getElementById('resultList').innerHTML = friends.map(f => `
+            <div class="person-row"><span>${f}</span><span style="color:var(--primary); font-weight:bold;">${summary[f].toLocaleString(undefined, {minimumFractionDigits:2})} ฿</span></div>
+        `).join('') || '<p style="text-align:center; color:var(--text-muted);">รอการคำนวณ...</p>';
     }
 
-    function formatMoney(amount) {
-        return amount.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ฿';
-    }
+    updateUI();
 </script>
 
 </body>
